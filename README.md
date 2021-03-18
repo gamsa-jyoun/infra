@@ -9,7 +9,7 @@ tools:
 
 ```
 # if VMs don't exist: launch / create VMs
-multipass launch --cpus 2 --mem 6G --disk 20G --name master-node --cloud-init multipass.yaml
+multipass launch --cpus 3 --mem 4G --disk 20G --name master-node --cloud-init multipass.yaml
 
 multipass ls
 
@@ -26,8 +26,8 @@ k3sup join --ip $NODE_MASTER --user ubuntu --server-ip $NODE_MASTER --server-use
 # initialize k8s objects
 pushd /home/james/lab/kub-lab/k8s-intro-meetup-kit/k8s
 
-k apply -f gamsa-service.yaml
-k apply -f gamsa-deployment.yaml
+sudo k3s kubectl apply -f gamsa-service.yaml
+sudo k3s kubectl apply -f gamsa-deployment.yaml
 
 popd
 
@@ -39,8 +39,8 @@ NOTE:
   ```
 
 
-export INGRESS_IP=$(kubectl get svc -o jsonpath='{.items[1].status.loadBalancer.ingress[0].ip}')
-export INGRESS_PORT=$( kg svc -o jsonpath='{.items[1].spec.ports[0].port}' )
+export INGRESS_IP=$(sudo k3s kubectl get svc -o jsonpath='{.items[1].status.loadBalancer.ingress[0].ip}')
+export INGRESS_PORT=$( sudo k3s kubectl get svc -o jsonpath='{.items[1].spec.ports[0].port}' )
 
 curl $INGRESS_IP:$INGRESS_PORT/posts
 ```
@@ -52,3 +52,13 @@ kubectl run -it --rm --restart=Never sqlite3
 kubectl exec -it rails-dep-748f88b984-jcdhp -- rails console
 kubectl exec -it rails-dep-748f88b984-jcdhp -- /bin/bash
   sqlite3 db/development.sqlite3
+
+# adding secrets / config maps with kustomize
+k apply -k kustomize/secrets
+k apply -k kustomize/configs
+
+
+# scaling deployment
+k scale deployment/rails-dep --replicas=1
+
+curl -sfL https://get.k3s.io | sh -

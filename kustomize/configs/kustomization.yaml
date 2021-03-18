@@ -1,0 +1,4 @@
+configMapGenerator:
+- name: gamsa-configmap
+  files:
+  - application.properties
