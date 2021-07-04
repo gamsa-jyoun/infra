@@ -28,8 +28,11 @@ wipe the router
 look up the router and see what the default IP address is
 192.168.0.0.1
 
+export SERVER_IP="192.168.1.90"
 
+ssh-copy-id [-i [identity_file]] [user@]machine 
 
+ssh-copy-id -i -f pi_1
 
 # DEVELOPMENT
 
@@ -175,14 +178,32 @@ $ k auth
 $ k auth reconcile -f some-rbac-config.yaml
 ```
 
-
 # CLUSTER ADMIN
 mounting USB via CLI
 https://help.ubuntu.com/community/Mount/USB
   sudo fdisk -l
   sudo mount -t vfat /dev/sda1 /media/usb-drive -o uid=1000,gid=1000,utf8,dmask=027,fmask=137
 
+flash image onto SD card
+sudo dd if=2021-03-04-raspios-buster-armhf-lite.img of=/dev/sda bs=4M conv=fsync status=progress
+
   https://stackoverflow.com/questions/7878707/how-to-unmount-a-busy-device
   sudo umount /dev/sda1
     NOTE: cd out of the mounted directory (/media/usb-drive)
+
+power down:
+sudo shutdown -h now
+
+reboot
+sudo shutdown -r now
+
+adding wifi:
+https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
+
+proxy server to access internet:
+https://www.raspberrypi.org/documentation/configuration/use-a-roxy.md
+
+securing:
+https://www.raspberrypi.org/documentation/configuration/security.md
+
 
